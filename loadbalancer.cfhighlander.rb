@@ -1,10 +1,10 @@
-HighlanderComponent do
-  DependsOn 'vpc@1.0.4'
+CfhighlanderTemplate do
+  DependsOn 'vpc@1.1.0'
   Name 'loadbalancer'
   Parameters do
-    StackParam 'EnvironmentName', 'dev', isGlobal: true
-    StackParam 'EnvironmentType', 'development', isGlobal: true
-    StackParam 'StackOctet', isGlobal: true
+    ComponentParam 'EnvironmentName', 'dev', isGlobal: true
+    ComponentParam 'EnvironmentType', 'development', isGlobal: true
+    ComponentParam 'StackOctet', isGlobal: true
     MappingParam('DnsDomain') do
       map 'AccountId'
       attribute 'DnsDomain'

@@ -90,7 +90,7 @@ CloudFormation do
       Value(Ref("#{tg_name}TargetGroup"))
       Export FnSub("${EnvironmentName}-#{component_name}-#{tg_name}TargetGroup")
     }
-  end if defined?('targetgroups')
+  end if defined?(targetgroups)
 
   listeners.each do |listener_name, listener|
     next if listener.nil?
@@ -109,7 +109,7 @@ CloudFormation do
       Value(Ref("#{listener_name}Listener"))
       Export FnSub("${EnvironmentName}-#{component_name}-#{listener_name}Listener")
     }
-  end if defined?('listeners')
+  end if defined?(listeners)
 
   if defined? records
     records.each do |record|

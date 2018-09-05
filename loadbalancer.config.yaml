@@ -21,15 +21,15 @@ targetgroups:
       Name: Default-HTTP
 
 listeners:
-  http:
-    port: 80
-    protocol: http
-    default_targetgroup: default
+  # http:
+  #   port: 80
+  #   protocol: http
+  #   default_targetgroup: default
   # https:
   #   port: 443
   #   protocol: https
   #   default_targetgroup: default
-  #   ssl_policy: ELBSecurityPolicy-TLS-1-2-Ext-2018-06 # 
+  #   ssl_policy: ELBSecurityPolicy-TLS-1-2-Ext-2018-06 #
 
 securityGroups:
   loadbalancer:

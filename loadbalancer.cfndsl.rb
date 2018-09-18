@@ -140,5 +140,13 @@ CloudFormation do
     Value(Ref("SecurityGroupLoadBalancer"))
     Export FnSub("${EnvironmentName}-#{component_name}-SecurityGroupLoadBalancer")
   }
+  Output("LoadBalancerDNSName") {
+    Value(FnGetAtt("LoadBalancer", "DNSName"))
+    Export FnSub("${EnvironmentName}-#{component_name}-DNSName")
+  }
+  Output("LoadBalancerCanonicalHostedZoneID") {
+    Value(FnGetAtt("LoadBalancer", "CanonicalHostedZoneID"))
+    Export FnSub("${EnvironmentName}-#{component_name}-CanonicalHostedZoneID")
+  }
 
 end

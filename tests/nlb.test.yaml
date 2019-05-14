@@ -1,0 +1,43 @@
+test_metadata:
+  type: config
+  name: nlb
+  description: public network loadbalancer for acting as an aurora proxy
+
+
+loadbalancer_type: network
+loadbalancer_scheme: public
+loadbalancer_tags:
+  Name: aurora-proxy
+
+records:
+  - dbproxy
+
+targetgroups:
+  default:
+    protocol: tcp
+    port: 3306
+    type: ip
+    tags:
+      Name: MySQL-TCP
+    healthcheck:
+      HealthCheckPort: "traffic-port"
+      protocol: TCP
+    target_ips:
+      - ip: 10.1.2.16/32
+        port: 3306
+
+listeners:
+  http:
+  mysql:
+    port: 3306
+    protocol: tcp
+    default_targetgroup: default
+
+securityGroups:
+  loadbalancer:
+    - rules:
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+      ips:
+        - public

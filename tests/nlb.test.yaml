@@ -6,6 +6,7 @@ test_metadata:
 
 loadbalancer_type: network
 loadbalancer_scheme: public
+static_ips: true
 loadbalancer_tags:
   Name: aurora-proxy
 

@@ -2,7 +2,7 @@
 CloudFormation do
 
   private = loadbalancer_scheme == 'internal' ? true : false
-  nlb_eip_conditions(maximum_availability_zones) if (loadbalancer_type == 'network') && !(private) && (static_ips)
+  # nlb_eip_conditions(maximum_availability_zones) if (loadbalancer_type == 'network') && !(private) && (static_ips)
 
   EC2_SecurityGroup('SecurityGroupLoadBalancer') do
     GroupDescription FnJoin(' ', [Ref('EnvironmentName'), component_name])
@@ -27,7 +27,7 @@ CloudFormation do
   ElasticLoadBalancingV2_LoadBalancer('LoadBalancer') do
 
     if (loadbalancer_type == 'network') && !(private) && (static_ips)
-      SubnetMappings nlb_subnet_mappings('SubnetPublic', maximum_availability_zones)
+      SubnetMappings nlb_subnet_mappings(FnSplit(',','SubnetIds'), maximum_availability_zones)
     else
       Scheme 'internal' if private
       Subnets Ref('SubnetIds')

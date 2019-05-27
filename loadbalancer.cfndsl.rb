@@ -27,7 +27,7 @@ CloudFormation do
   ElasticLoadBalancingV2_LoadBalancer('LoadBalancer') do
 
     if (loadbalancer_type == 'network') && !(private) && (static_ips)
-      SubnetMappings nlb_subnet_mappings(FnSplit(',','SubnetIds'), maximum_availability_zones)
+      SubnetMappings nlb_subnet_mappings('SubnetIds', maximum_availability_zones)
     else
       Scheme 'internal' if private
       Subnets Ref('SubnetIds')

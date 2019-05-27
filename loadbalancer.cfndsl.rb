@@ -158,7 +158,8 @@ CloudFormation do
   end if defined? listeners
 
   records.each do |record|
-    Route53_RecordSet("#{record.gsub('*','Wildcard').gsub('.','Dot')}LoadBalancerRecord") do
+    safe_name = record.gsub('*','Wildcard').gsub('.','Dot').gsub('-','')
+    Route53_RecordSet("#{safe_name}LoadBalancerRecord") do
       HostedZoneName FnJoin("", [ Ref("EnvironmentName"), ".", Ref('DnsDomain'), "."])
       if record == 'apex' || record == ''
         Name FnJoin("", [ Ref("EnvironmentName"), ".", Ref('DnsDomain'), "."])

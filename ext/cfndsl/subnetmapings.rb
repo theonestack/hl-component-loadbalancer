@@ -17,5 +17,5 @@
 # end
 
 def nlb_subnet_mappings(subnets, azs)
-  azs.times.collect { |az| { SubnetId: FnSelect(az, subnets), AllocationId: Ref("Nlb#{az}EIPAllocationId") } }
+  azs.times.collect { |az| { SubnetId: FnSelect(az, Ref(subnets)), AllocationId: Ref("Nlb#{az}EIPAllocationId") } }
 end

@@ -5,7 +5,7 @@ CfhighlanderTemplate do
     ComponentParam 'EnvironmentName', 'dev', isGlobal: true
     ComponentParam 'EnvironmentType', 'development', isGlobal: true
     ComponentParam 'StackOctet', isGlobal: true
-    ComponentParam 'NetworkPrefix', isGlobal: true
+    ComponentParam 'NetworkPrefix', '10', isGlobal: true
     MappingParam('DnsDomain') do
       map 'AccountId'
       attribute 'DnsDomain'

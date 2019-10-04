@@ -75,7 +75,7 @@ CloudFormation do
       ## Optional
       if tg.has_key?('healthcheck')
         HealthCheckPort tg['healthcheck']['port'] if tg['healthcheck'].has_key?('port')
-        HealthCheckProtocol tg['healthcheck']['protocol'] if tg['healthcheck'].has_key?('port')
+        HealthCheckProtocol tg['healthcheck']['protocol'] if tg['healthcheck'].has_key?('protocol')
         HealthCheckIntervalSeconds tg['healthcheck']['interval'] if tg['healthcheck'].has_key?('interval')
         HealthCheckTimeoutSeconds tg['healthcheck']['timeout'] if tg['healthcheck'].has_key?('timeout')
         HealthyThresholdCount tg['healthcheck']['heathy_count'] if tg['healthcheck'].has_key?('heathy_count')

@@ -1,5 +1,11 @@
 
 CloudFormation do
+
+  loadbalancer_scheme = external_parameters[:loadbalancer_scheme]
+  maximum_availability_zones = external_parameters[:maximum_availability_zones]
+  loadbalancer_type = external_parameters[:loadbalancer_type]
+  static_ips = external_parameters[:static_ips]
+
   private = false
   if defined?(loadbalancer_scheme) && loadbalancer_scheme == 'internal'
     private = true
@@ -9,25 +15,28 @@ CloudFormation do
   az_conditions_resources('SubnetCompute', maximum_availability_zones) if private
   nlb_eip_conditions(maximum_availability_zones) if (loadbalancer_type == 'network') && !(private) && (static_ips)
 
+  securityGroups = external_parameters[:securityGroups]
+  ip_blocks = external_parameters[:ip_blocks]
   EC2_SecurityGroup('SecurityGroupLoadBalancer') do
-    GroupDescription FnJoin(' ', [Ref('EnvironmentName'), component_name])
+    GroupDescription FnJoin(' ', [Ref('EnvironmentName'), external_parameters[:component_name]])
     VpcId Ref('VPCId')
     SecurityGroupIngress sg_create_rules(securityGroups['loadbalancer'], ip_blocks)
   end
 
   atributes = []
-
+  loadbalancer_attributes = external_parameters.fetch(:loadbalancer_attributes, {})
   loadbalancer_attributes.each do |key, value|
     atributes << { Key: key, Value: value } unless value.nil?
-  end if defined? loadbalancer_attributes
+  end
 
   tags = []
   tags << { Key: "Environment", Value: Ref("EnvironmentName") }
   tags << { Key: "EnvironmentType", Value: Ref("EnvironmentType") }
 
+  loadbalancer_tags = external_parameters[:loadbalancer_tags]
   loadbalancer_tags.each do |key, value|
     tags << { Key: key, Value: value }
-  end if defined? loadbalancer_tags
+  end
 
   ElasticLoadBalancingV2_LoadBalancer('LoadBalancer') do
 
@@ -51,6 +60,7 @@ CloudFormation do
     LoadBalancerAttributes atributes if atributes.any?
   end
 
+  targetgroups = external_parameters[:targetgroups]
   targetgroups.each do |tg_name, tg|
 
     atributes = []
@@ -96,10 +106,11 @@ CloudFormation do
 
     Output("#{tg_name}TargetGroup") {
       Value(Ref("#{tg_name}TargetGroup"))
-      Export FnSub("${EnvironmentName}-#{component_name}-#{tg_name}TargetGroup")
+      Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-#{tg_name}TargetGroup")
     }
-  end if defined? targetgroups
+  end
 
+  listeners = external_parameters.fetch(:listeners, {})
   listeners.each do |listener_name, listener|
     next if listener.nil?
 
@@ -160,10 +171,11 @@ CloudFormation do
 
     Output("#{listener_name}Listener") {
       Value(Ref("#{listener_name}Listener"))
-      Export FnSub("${EnvironmentName}-#{component_name}-#{listener_name}Listener")
+      Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-#{listener_name}Listener")
     }
-  end if defined? listeners
+  end
 
+  records = external_parameters.fetch(:records, [])
   records.each do |record|
     Route53_RecordSet("#{record.gsub('*','Wildcard').gsub('.','Dot')}LoadBalancerRecord") do
       HostedZoneName FnJoin("", [ Ref("EnvironmentName"), ".", Ref('DnsDomain'), "."])
@@ -178,27 +190,27 @@ CloudFormation do
           HostedZoneId: FnGetAtt("LoadBalancer", "CanonicalHostedZoneID")
       })
     end
-  end if defined? records
+  end
 
   Output("LoadBalancer") {
     Value(Ref("LoadBalancer"))
-    Export FnSub("${EnvironmentName}-#{component_name}-LoadBalancer")
+    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-LoadBalancer")
   }
   Output("SecurityGroupLoadBalancer") {
     Value(Ref("SecurityGroupLoadBalancer"))
-    Export FnSub("${EnvironmentName}-#{component_name}-SecurityGroupLoadBalancer")
+    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-SecurityGroupLoadBalancer")
   }
   Output("LoadBalancerDNSName") {
     Value(FnGetAtt("LoadBalancer", "DNSName"))
-    Export FnSub("${EnvironmentName}-#{component_name}-DNSName")
+    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-DNSName")
   }
   Output("LoadBalancerCanonicalHostedZoneID") {
     Value(FnGetAtt("LoadBalancer", "CanonicalHostedZoneID"))
-    Export FnSub("${EnvironmentName}-#{component_name}-CanonicalHostedZoneID")
+    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-CanonicalHostedZoneID")
   }
   Output("LoadBalancerFullName") {
     Value(FnGetAtt("LoadBalancer", "LoadBalancerFullName"))
-    Export FnSub("${EnvironmentName}-#{component_name}-LoadBalancerFullName")
+    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-LoadBalancerFullName")
   }
 
 end

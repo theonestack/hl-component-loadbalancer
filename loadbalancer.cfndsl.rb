@@ -7,7 +7,7 @@ CloudFormation do
   static_ips = external_parameters[:static_ips]
 
   private = false
-  if defined?(loadbalancer_scheme) && loadbalancer_scheme == 'internal'
+  if loadbalancer_scheme == 'internal'
     private = true
   end
 
@@ -38,6 +38,7 @@ CloudFormation do
     tags << { Key: key, Value: value }
   end
 
+  loadbalancer_type = external_parameters[:loadbalancer_type]
   ElasticLoadBalancingV2_LoadBalancer('LoadBalancer') do
 
     if private

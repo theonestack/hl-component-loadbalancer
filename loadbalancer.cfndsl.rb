@@ -38,7 +38,6 @@ CloudFormation do
     tags << { Key: key, Value: value }
   end
 
-  loadbalancer_type = external_parameters[:loadbalancer_type]
   ElasticLoadBalancingV2_LoadBalancer('LoadBalancer') do
 
     if private

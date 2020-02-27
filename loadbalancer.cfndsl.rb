@@ -88,8 +88,8 @@ CloudFormation do
         HealthCheckProtocol tg['healthcheck']['protocol'] if tg['healthcheck'].has_key?('protocol')
         HealthCheckIntervalSeconds tg['healthcheck']['interval'] if tg['healthcheck'].has_key?('interval')
         HealthCheckTimeoutSeconds tg['healthcheck']['timeout'] if tg['healthcheck'].has_key?('timeout')
-        HealthyThresholdCount tg['healthcheck']['heathy_count'] if tg['healthcheck'].has_key?('heathy_count')
-        UnhealthyThresholdCount tg['healthcheck']['unheathy_count'] if tg['healthcheck'].has_key?('unheathy_count')
+        HealthyThresholdCount tg['healthcheck']['healthy_count'] if tg['healthcheck'].has_key?('healthy_count')
+        UnhealthyThresholdCount tg['healthcheck']['unhealthy_count'] if tg['healthcheck'].has_key?('unhealthy_count')
         HealthCheckPath tg['healthcheck']['path'] if tg['healthcheck'].has_key?('path')
         Matcher ({ HttpCode: tg['healthcheck']['code'] }) if tg['healthcheck'].has_key?('code')
       end

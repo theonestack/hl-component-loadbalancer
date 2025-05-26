@@ -1,0 +1,43 @@
+test_metadata:
+  type: config
+  name: internal
+  description: internal application loadbalancer test
+
+loadbalancer_type: application
+loadbalancer_scheme: internal
+
+ip_blocks:
+  internal:
+    - stack
+
+targetgroups:
+  default:
+    protocol: http
+    port: 8080
+    tags:
+      Name: Internal-Service
+    healthcheck:
+      path: /health
+      port: 8080
+      protocol: HTTP
+      interval: 30
+      timeout: 10
+      healthy_threshold: 3
+      unhealthy_threshold: 3
+
+listeners:
+  http:
+    port: 80
+    protocol: http
+    default_targetgroup: default
+
+securityGroups:
+  loadbalancer:
+    -
+      rules:
+        -
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+      ips:
+        - internal

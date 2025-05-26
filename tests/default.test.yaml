@@ -1,0 +1,52 @@
+test_metadata:
+  type: config
+  name: default
+  description: default application loadbalancer test
+
+loadbalancer_type: application
+loadbalancer_scheme: public
+loadbalancer_attributes:
+  idle_timeout.timeout_seconds: 120
+
+ip_blocks:
+  public:
+    - 0.0.0.0/0
+  internal:
+    - stack
+
+targetgroups:
+  default:
+    protocol: http
+    port: 80
+    tags:
+      Name: Default-HTTP
+  api:
+    protocol: http
+    port: 80
+    tags:
+      Name: Api-Rule
+
+listeners:
+  http:
+    port: 80
+    protocol: http
+    default_targetgroup: default
+    rules:
+      - path: /api
+        priority: 100
+        targetgroup: api
+      - host: api.example.com
+        priority: 200
+        targetgroup: api
+
+securityGroups:
+  loadbalancer:
+    -
+      rules:
+        -
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+      ips:
+        - public
+        - internal

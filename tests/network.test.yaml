@@ -1,0 +1,45 @@
+test_metadata:
+  type: config
+  name: network
+  description: network loadbalancer test
+
+loadbalancer_type: network
+loadbalancer_scheme: public
+static_ips: true
+
+records:
+  - dbproxy
+  - apex
+
+targetgroups:
+  default:
+    protocol: tcp
+    port: 3306
+    type: ip
+    tags:
+      Name: MySQL-TCP
+    healthcheck:
+      HealthCheckPort: traffic-port
+      protocol: TCP
+    target_ips:
+      - ip: 10.0.0.10
+        port: 3306
+
+listeners:
+  mysql:
+    port: 3306
+    protocol: tcp
+    default_targetgroup: default
+
+ip_blocks:
+  public:
+    - 0.0.0.0/0
+
+securityGroups:
+  loadbalancer:
+    - rules:
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+      ips:
+        - public
